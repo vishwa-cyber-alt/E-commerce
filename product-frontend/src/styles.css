@@ -123,3 +123,12 @@ body {
 .product-detail strong {
   color: #007bff;
 }
+
+.back-button {
+  background-color: #eee;
+  border: none;
+  padding: 8px 12px;
+  margin-bottom: 1rem;
+  cursor: pointer;
+  font-size: 16px;
+}

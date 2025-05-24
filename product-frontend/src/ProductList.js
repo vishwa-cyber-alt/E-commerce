@@ -9,12 +9,12 @@ function ProductList({ query }) {
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
 
-  const fetchProducts = async () => {
+  const fetchProducts = async (currentQuery = '') => {
     setLoading(true);
     try {
       let url = 'http://localhost:3000/api/products';
-      if (query.trim()) {
-        url = `http://localhost:3000/api/products/search/by-name?q=${encodeURIComponent(query)}`;
+      if (currentQuery.trim()) {
+        url = `http://localhost:3000/api/products/search/by-name?q=${encodeURIComponent(currentQuery)}`;
       }
       const res = await axios.get(url);
       setProducts(res.data);
@@ -25,16 +25,18 @@ function ProductList({ query }) {
   };
 
   useEffect(() => {
-    fetchProducts();
+    fetchProducts(query);
   }, [query]);
 
   useEffect(() => {
-    socket.on('product-updated', fetchProducts);
-    socket.on('product-added', fetchProducts);
+    const handleUpdate = () => fetchProducts(''); 
+
+    socket.on('product-updated', handleUpdate);
+    socket.on('product-added', handleUpdate);
 
     return () => {
-      socket.off('product-updated', fetchProducts);
-      socket.off('product-added', fetchProducts);
+      socket.off('product-updated', handleUpdate);
+      socket.off('product-added', handleUpdate);
     };
   }, []);
 
